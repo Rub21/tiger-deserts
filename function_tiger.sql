@@ -1,4 +1,5 @@
-﻿CREATE OR REPLACE FUNCTION num_node_by_version(the_geom geometry, vers int)
+﻿ 
+Create OR REPLACE FUNCTION num_node_by_version(the_geom geometry, vers int)
 RETURNS  int
 AS $$
 DECLARE
@@ -26,8 +27,19 @@ CREATE OR REPLACE FUNCTION max_version(the_geom geometry)
 RETURNS  int
 AS $$
 DECLARE
+_max_version int ;
 	BEGIN
-		RETURN( SELECT max(version) FROM tiger_version WHERE ST_Within(tiger_version.geom,the_geom));
+		_max_version=(SELECT max(version) FROM tiger_version WHERE ST_Within(tiger_version.geom,the_geom));
+
+
+		IF (_max_version IS NULL) THEN
+		
+		_max_version=0;												
+								    
+		END IF;
+		
+		RETURN _max_version;
+		
 	END;
 $$ LANGUAGE plpgsql;
 
@@ -36,10 +48,25 @@ CREATE OR REPLACE FUNCTION min_version(the_geom geometry)
 RETURNS  int
 AS $$
 DECLARE
+	_min_version int;
+	
 	BEGIN
 		RETURN( SELECT min(version) FROM tiger_version WHERE ST_Within(tiger_version.geom,the_geom));
+		
+		IF (_min_version IS NULL) THEN
+		
+		_min_version=0;												
+								    
+		END IF;
+		
+		RETURN _min_version;
+		
 	END;
 $$ LANGUAGE plpgsql;
+
+
+
+
 
 CREATE TABLE tiger_grid( --table tiger_grid2
 id_grid INT,
@@ -53,7 +80,9 @@ geom GEOMETRY
 )
 
 
+
 CREATE INDEX id_grid_tiger_grid_index ON tiger_grid(id_grid);
+
 
 CREATE OR REPLACE FUNCTION fill_data() 
 RETURNS INT
@@ -134,7 +163,7 @@ BEGIN
 				RAISE  NOTICE 'PERCENTAGE VERSION=1 : %',_perc_v1;
 				RAISE  NOTICE 'PERCENTAGE VERSION=2 : %',_perc_v2;
 						
-				 INSERT INTO tiger_grid(id_grid, 
+				/* INSERT INTO tiger_grid(id_grid, 
 						amo_vt, 
 						amo_v1, 
 						amo_v2,
@@ -149,7 +178,8 @@ BEGIN
 					_perc_v1,
 					_perc_v2,
 					_average_v,
-					_geom);					
+					_geom);*/
+					
 
 			END IF;	  
 		END LOOP;
@@ -159,11 +189,3 @@ END;
 $$ LANGUAGE plpgsql;
 
 select fill_data();
-
-
-
-
-
-
-
-
