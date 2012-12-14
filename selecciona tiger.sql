@@ -14,7 +14,6 @@ $$ LANGUAGE plpgsql;
 
 
 
-
 CREATE OR REPLACE FUNCTION funcion() 
 RETURNS TABLE (id int ,cant_points int,geom_grid geometry)
 AS $$
@@ -48,6 +47,7 @@ $$ LANGUAGE plpgsql;
 
 
 
+
 CREATE OR REPLACE FUNCTION funcion() 
 RETURNS TABLE (id int ,cant_points int,geom_grid geometry)
 AS $$
@@ -66,5 +66,6 @@ select id as idgrid , cant_points points_version1, geom_grid as Geometrygrid fro
 
 
 
+select * from funcion();
 
-
+SELECT ST_EXTENT(geom_grid) from funcion()
