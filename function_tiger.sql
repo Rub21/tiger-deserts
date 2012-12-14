@@ -41,10 +41,6 @@ DECLARE
 	END;
 $$ LANGUAGE plpgsql;
 
-
-
-
-
 CREATE TABLE tiger_grid( --table tiger_grid2
 id_grid INT,
 amo_vt BIGINT,
@@ -57,9 +53,7 @@ geom GEOMETRY
 )
 
 
-
 CREATE INDEX id_grid_tiger_grid_index ON tiger_grid(id_grid);
-
 
 CREATE OR REPLACE FUNCTION fill_data() 
 RETURNS INT
@@ -155,8 +149,7 @@ BEGIN
 					_perc_v1,
 					_perc_v2,
 					_average_v,
-					_geom);
-					
+					_geom);					
 
 			END IF;	  
 		END LOOP;
