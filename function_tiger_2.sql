@@ -6,7 +6,7 @@ DECLARE
 	BEGIN
 		RETURN( SELECT count(tiger_version.version)   
 		FROM tiger_version 
-		WHERE  version=vers AND ST_Within(tiger_version.geom,the_geom));
+		WHERE  version=vers AND st_dwithin(tiger_version.geom,the_geom,0));
 	END;
 $$ LANGUAGE plpgsql;
 
@@ -17,7 +17,7 @@ DECLARE
 	BEGIN
 		RETURN( SELECT count(tiger_version.version)   
 		FROM tiger_version 
-		WHERE ST_Within(tiger_version.geom,the_geom));
+		WHERE st_dwithin(tiger_version.geom,the_geom,0));
 	END;
 $$ LANGUAGE plpgsql;
 
@@ -29,7 +29,7 @@ AS $$
 DECLARE
 _max_version int ;
 	BEGIN
-		_max_version=(SELECT max(version) FROM tiger_version WHERE ST_Within(tiger_version.geom,the_geom));
+		_max_version=(SELECT max(version) FROM tiger_version WHERE st_dwithin(tiger_version.geom,the_geom,0));
 
 
 		IF (_max_version IS NULL) THEN
@@ -52,7 +52,7 @@ DECLARE
 	_min_version int;
 	
 	BEGIN
-		RETURN( SELECT min(version) FROM tiger_version WHERE ST_Within(tiger_version.geom,the_geom));
+		RETURN( SELECT min(version) FROM tiger_version WHERE st_dwithin(tiger_version.geom,the_geom,0));
 		
 		IF (_min_version IS NULL) THEN
 		
@@ -69,7 +69,7 @@ $$ LANGUAGE plpgsql;
 
 
 
-CREATE TABLE tiger_grid_us( --table tiger_grid2
+CREATE TABLE tiger_grid( --table tiger_grid2
 id_grid INT,
 amo_vt BIGINT,
 amo_v1 INT,
@@ -83,7 +83,7 @@ geom GEOMETRY
 --DROP TABLE tiger_grid
 
 
---CREATE INDEX id_grid_tiger_grid_us_index ON tiger_grid(id_grid);
+--CREATE INDEX id_grid_tiger_grid_index ON tiger_grid(id_grid);
 
 
 CREATE OR REPLACE FUNCTION fill_data() 
@@ -105,7 +105,7 @@ DECLARE
 BEGIN
 
 	
-	_num = (select count(*) FROM grid);--grid
+	_num = 500000;/*(select count(*) FROM grid);--grid*/
 	
         FOR _i IN 1.._num
 
@@ -171,7 +171,7 @@ BEGIN
 					RAISE  NOTICE 'PERCENTAGE VERSION=1 : %',_perc_v1;
 					RAISE  NOTICE 'PERCENTAGE VERSION=2 : %',_perc_v2;
 							
-				 INSERT INTO tiger_grid_us(id_grid, 
+				 INSERT INTO tiger_grid(id_grid, 
 							amo_vt, 
 							amo_v1, 
 							amo_v2,
