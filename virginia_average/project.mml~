@@ -1,0 +1,74 @@
+{
+  "bounds": [
+    -180,
+    -85.05112877980659,
+    180,
+    85.05112877980659
+  ],
+  "center": [
+    0,
+    0,
+    2
+  ],
+  "format": "png",
+  "interactivity": {
+    "layer": "grid",
+    "template_teaser": "<div style=\"font-family:Helvetica,Arial,sans-serif;; \nfont-style:normal;\nwidth: 300px;\">\n\n<div style=\"right: 0px;\nfont-size:90%;\nfont-weight: 500;\nmargin-top:7px;\nmargin-bottom: 7px;\">\n<span style=\"font-size: 20px;\nfont-weight: bold;\nvertical-align: middle;\">Version 1</span> \n</div>\n\n<div style=\"right: 0px;\nfont-size:90%;\nfont-weight: 500;\npading=5px;\n-moz-border-radius: 8px;\n-webkit-border-radius: 8px;\n-o-border-radius: 8px;\">\n\n<span style=\"font-size: 20px;\nfont-weight: bold;\nvertical-align: middle;\"> Amount : {{{amo_v1}}}</span> \n</div>\n\n<div style=\"right: 0px;\n\nfont-size:90%;\nfont-weight: 500;\npading=5px;\nbackground-color:#EDEFF4;\n-moz-border-radius: 8px;\n-webkit-border-radius: 8px;\n-o-border-radius: 8px;\">\n\n<span style=\"font-size: 20px;\nfont-weight: bold;\nvertical-align: middle;\"> Average: {{{average_v}}}</span> \n</div>\n\n<div style=\"right: 0px;\nfont-size:90%;\nfont-weight: 500;\n\npading=5px;\">\n\n<span style=\"font-size: 20px;\nfont-weight: bold;\nvertical-align: middle;\"> Percentage: {{{perc_v1}}}%</span> \n</div>\n</div>\n\n",
+    "fields": [
+      "amo_v1",
+      "average_v",
+      "perc_v1",
+      "id_grid"
+    ]
+  },
+  "minzoom": 0,
+  "maxzoom": 22,
+  "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+  "Stylesheet": [
+    "style.mss"
+  ],
+  "Layer": [
+    {
+      "id": "countries",
+      "name": "countries",
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "geometry": "polygon",
+      "Datasource": {
+        "file": "http://mapbox-geodata.s3.amazonaws.com/natural-earth-1.4.0/cultural/10m-admin-0-countries.zip",
+        "type": "shape"
+      }
+    },
+    {
+      "extent": [
+        -124.75583496090002,
+        24.5018566132,
+        -66.9558349608865,
+        49.40185661319921
+      ],
+      "Datasource": {
+        "type": "postgis",
+        "table": "(SELECT id_grid, amo_vt, amo_v1, amo_v2, perc_v1, perc_v2, Cast(average_v As Decimal (10, 2)), \n       geom\n  FROM tiger_grid_v) as grids",
+        "key_field": "id_grid",
+        "geometry_field": "geom",
+        "extent_cache": "custom",
+        "extent": "-124.7558349609 24.5018566132,-66.9558349608865 49.4018566131992",
+        "host": "localhost",
+        "port": "5432",
+        "user": "postgres",
+        "password": "1234",
+        "dbname": "tiger"
+      },
+      "id": "grid",
+      "class": "",
+      "srs-name": "WGS84",
+      "srs": "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs",
+      "advanced": {},
+      "name": "grid"
+    }
+  ],
+  "scale": 1,
+  "metatile": 2,
+  "name": "Us_average",
+  "description": "",
+  "legend": "<div style=\"text-align:center;\">\n<img src=\"http://dl.dropbox.com/u/43116811/postgres/issue/average1.png\">\n</div>"
+}

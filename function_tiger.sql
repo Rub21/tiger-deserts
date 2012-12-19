@@ -6,7 +6,7 @@ DECLARE
 	BEGIN
 		RETURN( SELECT count(tiger_version.version)   
 		FROM tiger_version 
-		WHERE  version=vers AND ST_Within(tiger_version.geom,the_geom));
+		WHERE  version=vers AND st_dwithin(tiger_version.geom,the_geom,0));
 	END;
 $$ LANGUAGE plpgsql;
 
@@ -17,7 +17,7 @@ DECLARE
 	BEGIN
 		RETURN( SELECT count(tiger_version.version)   
 		FROM tiger_version 
-		WHERE ST_Within(tiger_version.geom,the_geom));
+		WHERE st_dwithin(tiger_version.geom,the_geom,0));
 	END;
 $$ LANGUAGE plpgsql;
 
@@ -29,7 +29,7 @@ AS $$
 DECLARE
 _max_version int ;
 	BEGIN
-		_max_version=(SELECT max(version) FROM tiger_version WHERE ST_Within(tiger_version.geom,the_geom));
+		_max_version=(SELECT max(version) FROM tiger_version WHERE st_dwithin(tiger_version.geom,the_geom,0));
 
 
 		IF (_max_version IS NULL) THEN
@@ -52,7 +52,7 @@ DECLARE
 	_min_version int;
 	
 	BEGIN
-		RETURN( SELECT min(version) FROM tiger_version WHERE ST_Within(tiger_version.geom,the_geom));
+		RETURN( SELECT min(version) FROM tiger_version WHERE st_dwithin(tiger_version.geom,the_geom,0));
 		
 		IF (_min_version IS NULL) THEN
 		
@@ -65,11 +65,7 @@ DECLARE
 	END;
 $$ LANGUAGE plpgsql;
 
---select min_version(geom)from gridv where gid=25846;
-
-
-
-CREATE TABLE tiger_grid_us( --table tiger_grid2
+CREATE TABLE tiger_grid( --table tiger_grid2
 id_grid INT,
 amo_vt BIGINT,
 amo_v1 INT,
@@ -80,10 +76,7 @@ average_v FLOAT,
 geom GEOMETRY
 )
 
---DROP TABLE tiger_grid
-
-
---CREATE INDEX id_grid_tiger_grid_us_index ON tiger_grid(id_grid);
+CREATE INDEX id_grid_tiger_grid_index ON tiger_grid(id_grid);
 
 
 CREATE OR REPLACE FUNCTION fill_data() 
@@ -105,12 +98,12 @@ DECLARE
 BEGIN
 
 	
-	_num = (select count(*) FROM grid);--grid
+	_num = (select count(*) FROM grid);
 	
-        FOR _i IN 1.._num
+        FOR _i IN 1000001.._num
 
 		LOOP 
-			_geom=(SELECT x.geom FROM  grid AS x  WHERE x.gid =_i);--grid
+			_geom=(SELECT x.geom FROM  grid AS x  WHERE x.gid =_i);
 
 			_amo_v1=0;				
 			_amo_v2=0;
@@ -171,7 +164,7 @@ BEGIN
 					RAISE  NOTICE 'PERCENTAGE VERSION=1 : %',_perc_v1;
 					RAISE  NOTICE 'PERCENTAGE VERSION=2 : %',_perc_v2;
 							
-				 INSERT INTO tiger_grid_us(id_grid, 
+				 INSERT INTO tiger_grid(id_grid, 
 							amo_vt, 
 							amo_v1, 
 							amo_v2,
@@ -187,7 +180,6 @@ BEGIN
 						_perc_v2,
 						_average_v,
 						_geom);
-
 
 				END IF;	
 				
